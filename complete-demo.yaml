@@ -37,7 +37,7 @@ spec:
           emptyDir:
             medium: Memory
       nodeSelector:
-        beta.kubernetes.io/os: linux
+        kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
@@ -95,7 +95,7 @@ spec:
           emptyDir:
             medium: Memory
       nodeSelector:
-        beta.kubernetes.io/os: linux
+        kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
@@ -129,7 +129,7 @@ spec:
     spec:
       containers:
       - name: catalogue-db
-        image: mosuke5/sockshop-catalogue-db@sha256:e9c9192a81991ab1acf2dcc5819f0b0eb513d04e80fa21ae1b869bc5ba810c40
+        image: quay.io/redhattraining/mysql-57-rhel7
         env:
           - name: MYSQL_USER
             value: catalogue_user
@@ -147,7 +147,7 @@ spec:
         - name: mysql
           containerPort: 3306
       nodeSelector:
-        beta.kubernetes.io/os: linux
+        kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
@@ -181,15 +181,27 @@ spec:
     spec:
       containers:
       - name: catalogue
-        image: mosuke5/sockshop-catalogue:a04de03
-        #image: weaveworksdemos/catalogue:0.3.5
-        #env:
-        #- name: ZIPKIN
+        #image: mosuke5/sockshop-catalogue:a04de03
+        image: weaveworksdemos/catalogue:latest
+        env:
+          - name: MYSQL_USER
+            value: catalogue_user
+          - name: MYSQL_PASSWORD
+            value: default_password
+          - name: MYSQL_DATABASE
+            value: socksdb
+          - name: MYSQL_ROOT_PASSWORD
+            value: fake_password
+          - name: MYSQL_OPERATIONS_USER
+            value: opuser
+          - name: MYSQL_OPERATIONS_PASSWORD
+            value: opuser_password        
+                #- name: ZIPKIN
         #  value: http://zipkin:9411/api/v1/spans
         ports:
         - containerPort: 80
       nodeSelector:
-        beta.kubernetes.io/os: linux
+        kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
@@ -222,11 +234,11 @@ spec:
     spec:
       containers:
       - name: front-end
-        image: mosuke5/front-end:master-7ad6254
+        image: weaveworksdemos/front-end:latest
         ports:
         - containerPort: 8079
       nodeSelector:
-        beta.kubernetes.io/os: linux
+        kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
@@ -298,7 +310,7 @@ spec:
           emptyDir:
             medium: Memory
       nodeSelector:
-        beta.kubernetes.io/os: linux
+        kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
@@ -332,7 +344,7 @@ spec:
     spec:
       containers:
       - name: orders
-        image: weaveworksdemos/orders:0.4.7
+        image: weaveworksdemos/orders:latest
         env:
          - name: ZIPKIN
            value: zipkin
@@ -350,7 +362,7 @@ spec:
           emptyDir:
             medium: Memory
       nodeSelector:
-        beta.kubernetes.io/os: linux
+        kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
@@ -384,14 +396,14 @@ spec:
     spec:
       containers:
       - name: payment
-        image: weaveworksdemos/payment:0.4.3
+        image: weaveworksdemos/payment:latest
         env:
         - name: ZIPKIN
           value: http://zipkin:9411/api/v1/spans
         ports:
         - containerPort: 80
       nodeSelector:
-        beta.kubernetes.io/os: linux
+        kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
@@ -429,7 +441,7 @@ spec:
         ports:
         - containerPort: 80
       nodeSelector:
-        beta.kubernetes.io/os: linux
+        kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
@@ -469,7 +481,7 @@ spec:
         ports:
         - containerPort: 5672
       nodeSelector:
-        beta.kubernetes.io/os: linux
+        kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
@@ -522,7 +534,7 @@ spec:
           emptyDir:
             medium: Memory
       nodeSelector:
-        beta.kubernetes.io/os: linux
+        kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
@@ -556,8 +568,8 @@ spec:
     spec:
       containers:
       - name: user-db
-        image: mosuke5/sockshop-user-db@sha256:7633a123fe2a1e6191fd37cad6d4f07bfb2acdc3a634e27c226df3ae21357da0
-        #image: centos/mongodb-34-centos7
+        #image: mosuke5/sockshop-user-db@sha256:7633a123fe2a1e6191fd37cad6d4f07bfb2acdc3a634e27c226df3ae21357da0
+        image: centos/mongodb-34-centos7
         ports:
         - name: mongo
           containerPort: 27017
@@ -582,7 +594,7 @@ spec:
           emptyDir:
             medium: Memory
       nodeSelector:
-        beta.kubernetes.io/os: linux
+        kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
@@ -616,7 +628,7 @@ spec:
     spec:
       containers:
       - name: user
-        image: weaveworksdemos/user:0.4.7
+        image: weaveworksdemos/user:master-ea7bc237
         ports:
         - containerPort: 80
         env:
@@ -629,7 +641,7 @@ spec:
         - name: ZIPKIN
           value: http://zipkin:9411/api/v1/spans
       nodeSelector:
-        beta.kubernetes.io/os: linux
+        kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
